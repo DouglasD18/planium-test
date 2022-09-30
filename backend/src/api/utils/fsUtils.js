@@ -16,7 +16,8 @@ async function read(name) {
 
 async function create(name, infos) {
   try {
-    const createdInfos = await fs.writeFile(path.resolve(__dirname, `${pathRoute}${name}.json`), infos);
+    const formated = JSON.stringify([infos]);
+    const createdInfos = await fs.writeFile(path.resolve(__dirname, `${pathRoute}${name}.json`), formated);
 
     return createdInfos;
   } catch (error) {
@@ -27,7 +28,6 @@ async function create(name, infos) {
 async function insert(name, newInfo) {
   try {
     const data = await read(name); 
-    console.log(typeof data);
     
     if (!data) {
       const created = await create(name, newInfo);
@@ -35,7 +35,7 @@ async function insert(name, newInfo) {
       return created;
     }
 
-    const newData = JSON.stringify([...data, ...newInfo]);
+    const newData = JSON.stringify([...data, newInfo]);
     const newInfos = await fs.writeFile(path.resolve(__dirname, `${pathRoute}${name}.json`), newData);
 
     return newInfos;

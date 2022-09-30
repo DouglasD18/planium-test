@@ -26,7 +26,7 @@ const BeneficiariosService = {
 
     const exists = planos.find((plano) => plano.registro === registro);
 
-    if (!exists) return throwError('coonflict', 'Plan not exists!');
+    if (!exists) return throwError('conflict', 'Plan not exists!');
   },
 
   async insert(body) {

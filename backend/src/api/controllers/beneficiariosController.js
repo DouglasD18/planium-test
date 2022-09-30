@@ -9,7 +9,6 @@ const BeneficiarioController = {
 
       return res.status(201).json(beneficiario);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
