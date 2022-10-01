@@ -49,9 +49,7 @@ const BeneficiariosService = {
     return preco;
   },
 
-  async calcPrecoPorBeneficiario(idade, quantidade, registro) {
-    const planos = await PlanosModel.read();
-    const precos = await PrecosModel.read();
+  calcPrecoPorBeneficiario(idade, quantidade, registro, planos, precos) {
     const faixa = this.calcFaixa(idade);
     let preco = 0;
 
@@ -60,24 +58,26 @@ const BeneficiariosService = {
 
     const prices = precos.filter((p) => p.codigo === codigo);
 
-    if (prices.length > 1 && prices[1] <= quantidade) {
+    if (prices.length > 1 && prices[1].minimo_vidas <= quantidade) {
       preco = this.calcPreco(prices[1], faixa);
+    } else {
+      preco = this.calcPreco(prices[0], faixa);
     }
-
-    preco = this.calcPreco(prices[0], faixa);
 
     return { idade, preco };
   },
 
   async insertProposta(body) {
-    const { quantidade, idade , registro } = body;
+    const planos = await PlanosModel.read();
+    const precos = await PrecosModel.read();
+    const { idade, quantidade, registro } = body;
 
-    const precoPorBeneficirario = await Promise.all(idade.map
-      (async (age) => await this.calcPrecoPorBeneficiario(age, quantidade, registro)));
+    const precoPorBeneficiario = idade.map
+      ((age) => this.calcPrecoPorBeneficiario(age, quantidade, registro, planos, precos));
     
-    const precoTotal = precoPorBeneficirario.reduce((prev, cur) => prev.preco + cur.preco);
+    const precoTotal = precoPorBeneficiario.reduce((acc, cur) => acc + cur.preco, 0);
 
-    const proposta = { precoPorBeneficirario, precoTotal };
+    const proposta = { precoPorBeneficiario, precoTotal };
     await PropostaModel.insert(proposta);
 
     return proposta;
