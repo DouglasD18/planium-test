@@ -1,23 +1,16 @@
 import './App.css';
+import Header from './components/header';
+import Provider from './context/Provider';
+import Input from './components/InputBeneficiriarios';
+import ShowReturn from './components/ShowReturn';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider>
+      <Header />
+      <Input />
+      <ShowReturn />
+    </Provider>
   );
 }
 
